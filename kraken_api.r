@@ -205,6 +205,16 @@ kraken_get_ohlc <- function(pair, interval=NULL) {
 
 # ORDERBOOK (PUBLIC)
 
+kraken_get_coins <- function() {
+  url <- "https://api.kraken.com/0/public/AssetPairs"
+  query_result_json <- rawToChar(getURLContent(url = url, binary = TRUE))
+  query_result <- fromJSON(query_result_json)
+  coinpairs <- names(query_result$result)
+  out <- list(query_result,coinpairs)
+  names(out) <- c("raw_results","coinpairs") #returns raw result and formatted orderbook dataframe
+  return(out)
+}
+
 kraken_get_orderbook <- function(pair) {
   url <- "https://api.kraken.com/0/public/Depth"
   pair <- paste(pair,collapse=",")
