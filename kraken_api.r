@@ -103,8 +103,6 @@ kraken_get_open_orders <- function(key,secret) {
 
 # PLACE ORDER  
 
-Mulige_pairs <- c("XXMRZEUR","XXRPZEUR","XZECZEUR","XXBTZEUR","XREPZEUR","XLTCZEUR","XETHZEUR","XETCZEUR")
-
 #req <- list(pair="XXBTZEUR", type=c("buy","sell"),ordertype=c("market","limit"),price=9000,volume=0.006)
 
 kraken_place_order <- function(pair, type, ordertype, price=NULL, volume, key, secret) {
