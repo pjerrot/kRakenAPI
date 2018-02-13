@@ -12,7 +12,7 @@ Functions were written from looking at RBitcoin package - so thank you very much
 I only wrote these api functions to enable trading etc. with coins not currently supported in Rbitcoin package
 
 Load functions:
-source("https://raw.githubusercontent.com/pjerrot/kRakenAPI/master/kraken_api.r")
+**source("https://raw.githubusercontent.com/pjerrot/kRakenAPI/master/kraken_api.r")**
 Require following packages: "digest", "RCurl", "caTools", "jsonlite".
 
 Feel free to work on functions. Please do this in new branch and send me pull request when ready.
