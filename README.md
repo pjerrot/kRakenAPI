@@ -1,4 +1,4 @@
-R wrapper for kraken api
+##**R wrapper for kraken api**
 
 Wrapped around (most of) these api calls: https://www.kraken.com/help/api
 
@@ -17,4 +17,4 @@ Require following packages: "digest", "RCurl", "caTools", "jsonlite".
 
 Feel free to work on functions. Please do this in new branch and send me pull request when ready.
 
-Enjoy!
+**Enjoy!**
