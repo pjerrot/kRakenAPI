@@ -1,4 +1,4 @@
-##**R wrapper for kraken api**
+## **R wrapper for kraken api**
 
 Wrapped around (most of) these api calls: https://www.kraken.com/help/api
 
