@@ -201,7 +201,8 @@ kraken_get_ohlc <- function(pair, interval=NULL) {
   return(outs)
 }
 
-# ORDERBOOK (PUBLIC)
+
+# Kraken coin pairs list
 
 kraken_get_coins <- function() {
   url <- "https://api.kraken.com/0/public/AssetPairs"
@@ -209,9 +210,11 @@ kraken_get_coins <- function() {
   query_result <- fromJSON(query_result_json)
   coinpairs <- names(query_result$result)
   out <- list(query_result,coinpairs)
-  names(out) <- c("raw_results","coinpairs") #returns raw result and formatted orderbook dataframe
+  names(out) <- c("raw_results","coinpairs") 
   return(out)
 }
+
+# ORDERBOOK (PUBLIC)
 
 kraken_get_orderbook <- function(pair) {
   url <- "https://api.kraken.com/0/public/Depth"
