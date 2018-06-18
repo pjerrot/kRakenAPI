@@ -145,6 +145,45 @@ kraken_cancel_order <- function(txid, key, secret) {  #txid can be retreived fro
   return(query_result)
 }
 
+# GET HISTORIC TRADES
+kraken_get_historic_trades <- function(from_unix_time=NULL,to_unix_time=NULL,pair=NULL,key,secret) {
+  url <- "https://api.kraken.com/0/private/TradesHistory"
+  
+  if (is.null(to_unix_time)) to_unix_time <- as.numeric(Sys.time())+100
+  if (is.null(from_unix_time)) from_unix_time <- as.numeric(as.POSIXct(Sys.Date()-365, format="%Y-%m-%d"))
+  
+  req <- list(start=from_unix_time, end=to_unix_time)
+  
+  nonce <- as.character(as.numeric(Sys.time()) * 1e+06)
+  
+  post_data <- paste0("nonce=", nonce)
+  post_data <- paste(post_data, paste(paste(names(req), req, sep = "="), collapse = "&"), sep = "&")
+  
+  method_path <- gsub("^.*?kraken.com", "", url)
+  sign <- hmac(key = base64Decode(secret, mode = "raw"), object = c(charToRaw(method_path), 
+                                                                    digest(object = paste0(nonce, post_data), algo = "sha256", serialize = FALSE, raw = TRUE)), algo = "sha512", raw = TRUE)
+  httpheader <- c('API-Key' = key, 'API-Sign' = base64Encode(sign))
+  curl <- getCurlHandle(useragent = "krakenuser")
+  query_result_json <- rawToChar(getURLContent(curl = curl, 
+                                               url = url, binary = TRUE, postfields = post_data, 
+                                               httpheader = httpheader))
+  query_result <- fromJSON(query_result_json)
+  
+  n_trades <- length(query_result$result$trades)
+  
+  trades <- data.frame(query_result$result$trades[[1]])
+  for (i in 2:n_trades) trades <- rbind(trades,data.frame(query_result$result$trades[[i]]))
+  trades$time_human <- as.POSIXct(trades$time,origin = "1970-01-01")
+  trades <- trades[order(trades$time),]
+  colnames(trades)[colnames(trades) %in% c("time")] <- "time_unix"
+  
+  if (n_trades==0) print("Currently no trades in system!")
+  
+  if (!is.null(pair)) trades <- trades[trades$pair==pair,]
+  
+  return(trades)
+}
+
 #################
 # PUBLIC INFO
 #################
