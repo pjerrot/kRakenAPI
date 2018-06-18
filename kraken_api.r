@@ -181,6 +181,12 @@ kraken_get_historic_trades <- function(from_unix_time=NULL,to_unix_time=NULL,pai
   
   if (!is.null(pair)) trades <- trades[trades$pair==pair,]
   
+  trades$price <- as.numeric(as.character(trades$price))
+  trades$cost <- as.numeric(as.character(trades$cost))
+  trades$fee <- as.numeric(as.character(trades$fee))
+  trades$vol <- as.numeric(as.character(trades$vol))
+  trades$margin <- as.numeric(as.character(trades$margin))
+  
   return(trades)
 }
 
