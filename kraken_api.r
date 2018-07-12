@@ -177,7 +177,7 @@ kraken_get_historic_trades <- function(from_unix_time=NULL,to_unix_time=NULL,pai
   n_trades <- length(query_result$result$trades)
   
   trades <- data.frame(query_result$result$trades[[1]])
-  for (i in 2:n_trades) trades <- rbind(trades,data.frame(query_result$result$trades[[i]]))
+  if (trades>1) for (i in 2:n_trades) trades <- rbind(trades,data.frame(query_result$result$trades[[i]]))
   trades$time_human <- as.POSIXct(trades$time,origin = "1970-01-01")
   trades <- trades[order(trades$time),]
   colnames(trades)[colnames(trades) %in% c("time")] <- "time_unix"
