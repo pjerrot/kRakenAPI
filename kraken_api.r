@@ -107,7 +107,12 @@ kraken_get_open_orders <- function(key,secret) {
 
 kraken_place_order <- function(pair, type, ordertype, price=NULL, volume, key, secret) {
 
-	  req <- list(pair=pair, type=type,ordertype=ordertype,price=price,volume=volume)
+	  if (is.null(price)) {
+		req <- list(pair=pair, type=type,ordertype=ordertype,volume=volume)
+	  } else {
+		req <- list(pair=pair, type=type,ordertype=ordertype,price=price,volume=volume)
+	  }
+	  
 	  url <- "https://api.kraken.com/0/private/AddOrder" 
       nonce <- as.character(as.numeric(Sys.time()) * 1000000)
       post_data <- paste0("nonce=", nonce)
