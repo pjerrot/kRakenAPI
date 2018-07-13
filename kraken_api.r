@@ -26,7 +26,7 @@ library(jsonlite)
 # TRADEBALANCE (VALUE OF ACCOUNT)
 kraken_account_balance <- function(key, secret) {
   
-  # BALANCE (ANTAL AF DE FORSKELLIGE COINS I PORTEFØLJEN)
+  # BALANCE
   url <- as.character("https://api.kraken.com/0/private/TradeBalance")
   
   nonce <- as.character(as.numeric(Sys.time()) * 1e+06)
@@ -102,8 +102,6 @@ kraken_get_open_orders <- function(key,secret) {
 ##################
 
 # PLACE ORDER  
-
-#req <- list(pair="XXBTZEUR", type=c("buy","sell"),ordertype=c("market","limit"),price=9000,volume=0.006)
 
 kraken_place_order <- function(pair, type, ordertype, price=NULL, volume, key, secret) {
 
@@ -235,8 +233,6 @@ kraken_get_ohlc <- function(pair, interval=NULL) {
   post_data <- paste(paste(paste(names(req), req, sep = "="), collapse = "&"), sep = "&")  
   query_result_json <- rawToChar(getURLContent(url = url, binary = TRUE, postfields = post_data))
   query_result <- fromJSON(query_result_json)
-  
-  #last <- list(last=query_result$result$last, last_true=as.POSIXct(query_result$result$last,origin = "1970-01-01")  )
   
   ohlc_df <- data.frame(query_result$result[[1]])
   colnames(ohlc_df)[1:8] <- c("time_unix","open","high","low","close","vwap", "volume","count")
