@@ -24,7 +24,7 @@ library(jsonlite)
 
 
 # TRADEBALANCE (VALUE OF ACCOUNT)
-kraken_account_balance <- function(key, secret) {
+kraken_get_account_balance <- function(key, secret) {
   
   # BALANCE
   url <- as.character("https://api.kraken.com/0/private/TradeBalance")
@@ -48,7 +48,7 @@ kraken_account_balance <- function(key, secret) {
 
 
 # BALANCE (COINS BALANCE IN ACCOUNT)
-kraken_coins_balance <- function(key, secret) {
+kraken_get_coins_balance <- function(key, secret) {
 
   # BALANCE (ANTAL AF DE FORSKELLIGE COINS I PORTEFØLJEN)
   url <- as.character("https://api.kraken.com/0/private/Balance")
