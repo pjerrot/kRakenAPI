@@ -65,6 +65,9 @@ kraken_get_coins_balance <- function(key, secret) {
   query_result_json <- rawToChar(getURLContent(url = url, binary = TRUE, postfields = post_data, httpheader = httpheader))
   query_result <- fromJSON(query_result_json)
   
+  # new. To return numeric value of coins balances 
+  for (i in 1:length(query_result$result)) query_result$result[i] <- as.numeric(query_result$result[i])
+  
   return(query_result)
 }
 
