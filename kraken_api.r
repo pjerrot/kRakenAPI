@@ -237,19 +237,22 @@ kraken_get_ohlc <- function(pair, interval=NULL) {
   query_result_json <- rawToChar(getURLContent(url = url, binary = TRUE, postfields = post_data))
   query_result <- fromJSON(query_result_json)
   
-  ohlc_df <- data.frame(query_result$result[[1]])
-  colnames(ohlc_df)[1:8] <- c("time_unix","open","high","low","close","vwap", "volume","count")
-  ohlc_df$time_human <- as.POSIXct(as.numeric(as.character(ohlc_df[,1])),origin = "1970-01-01")  
-  
-  for (i in colnames(ohlc_df)){
-    if (is.factor(ohlc_df[,i])) ohlc_df[,i] <- as.numeric(as.character(ohlc_df[,i] ))
+  if (length(query_result$result)>0) {
+    ohlc_df <- data.frame(query_result$result[[1]])
+    colnames(ohlc_df)[1:8] <- c("time_unix","open","high","low","close","vwap", "volume","count")
+    ohlc_df$time_human <- as.POSIXct(as.numeric(as.character(ohlc_df[,1])),origin = "1970-01-01")  
+    for (i in colnames(ohlc_df)){
+      if (is.factor(ohlc_df[,i])) ohlc_df[,i] <- as.numeric(as.character(ohlc_df[,i] ))
+    }
+  } else {
+    ohlc_df <- data.frame(time_unix = numeric(0),open= numeric(0), high= numeric(0), low= numeric(0), close= numeric(0), vwap = numeric(0),
+                          volume= numeric(0), count= numeric(0),stringsAsFactors=F) #creates emtpy table if error
+    print("No result was returned. Mayb unknown pair.")
   }
-  
   outs <-list(query_result, ohlc_df)
   names(outs) <- c("orig_result", "ohlc_df") # returns raw result, ohlc dataframe and time for last trade (unix/true)
   return(outs)
 }
-
 
 # Kraken coin pairs list
 
