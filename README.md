@@ -1,5 +1,8 @@
 ## **R wrapper for kraken api**
 
+# CURRENTLY DOESN'T WORK. KRAKEN HAS MADE CHANGES TO SITE WHICH CAUSES A "getURLContent" FUNCTION TO THROW ERROR.
+# TODAY IS FEB 19 - AND I WILL UPDATE WRAPPER FUNCTIONS IN COMING DAYS
+
 Wrapped around (most of) these api calls: https://www.kraken.com/help/api
 
 Functions to query and handle market data and personal kraken account.
