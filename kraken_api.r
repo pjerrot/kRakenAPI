@@ -213,16 +213,6 @@ kraken_get_ticker <- function(pair) {
 }
 
 
-kraken_get_ticker <- function(pair) {
-  url <- "https://api.kraken.com/0/public/Ticker"
-  pair <- paste(pair,collapse=",")
-  req <- GET(url, query = list(pair = pair))
-  stop_for_status(req)
-  json <- content(req, "text")
-  query_result <- fromJSON(json)
-  return(query_result)
-}
-
 #Output
 #    a = ask array(<price>, <whole lot volume>, <lot volume>),
 #    b = bid array(<price>, <whole lot volume>, <lot volume>),
