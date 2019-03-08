@@ -17,14 +17,14 @@ library(jsonlite)
 
 # !! key <- api key from kraken
 # !! secret <- private key from kraken
-
+# !! otp <- 2 factor verification password
 ########
 #ACCOUNT INFO
 ########
 
 
 # TRADEBALANCE (VALUE OF ACCOUNT)
-kraken_get_account_balance <- function(key, secret) {
+kraken_get_account_balance <- function(key, secret, otp) {
   
   # BALANCE
   url <- as.character("https://api.kraken.com/0/private/TradeBalance")
@@ -35,7 +35,7 @@ kraken_get_account_balance <- function(key, secret) {
   method_path <- gsub("^.*?kraken.com", "", url)
   sign <- hmac(key = base64Decode(secret, mode = "raw"), object = c(charToRaw(method_path), 
                               digest(object = paste0(nonce, post_data), algo = "sha256", serialize = FALSE, raw = TRUE)), algo = "sha512", raw = TRUE)
-  httpheader <- c('API-Key' = key, 'API-Sign' = base64Encode(sign))
+  httpheader <- c('API-Key' = key, 'API-Sign' = base64Encode(sign), 'otp' = otp)
   #curl <- getCurlHandle(useragent = paste("Rbitcoin", packageVersion("Rbitcoin")))
   
   query_result_json <- rawToChar(getURLContent(url = url, binary = TRUE, postfields = post_data, httpheader = httpheader))
@@ -48,7 +48,7 @@ kraken_get_account_balance <- function(key, secret) {
 
 
 # BALANCE (COINS BALANCE IN ACCOUNT)
-kraken_get_coins_balance <- function(key, secret) {
+kraken_get_coins_balance <- function(key, secret, otp) {
 
   # BALANCE (ANTAL AF DE FORSKELLIGE COINS I PORTEFØLJEN)
   url <- as.character("https://api.kraken.com/0/private/Balance")
@@ -59,7 +59,7 @@ kraken_get_coins_balance <- function(key, secret) {
   method_path <- gsub("^.*?kraken.com", "", url)
   sign <- hmac(key = base64Decode(secret, mode = "raw"), object = c(charToRaw(method_path), 
                       digest(object = paste0(nonce, post_data), algo = "sha256", serialize = FALSE, raw = TRUE)), algo = "sha512", raw = TRUE)
-  httpheader <- c('API-Key' = key, 'API-Sign' = base64Encode(sign))
+  httpheader <- c('API-Key' = key, 'API-Sign' = base64Encode(sign), 'otp' = otp)
   #curl <- getCurlHandle(useragent = paste("Rbitcoin", packageVersion("Rbitcoin")))
   
   query_result_json <- rawToChar(getURLContent(url = url, binary = TRUE, postfields = post_data, httpheader = httpheader))
@@ -73,7 +73,7 @@ kraken_get_coins_balance <- function(key, secret) {
 
 # OPEN ORDERS
 
-kraken_get_open_orders <- function(key,secret) {
+kraken_get_open_orders <- function(key,secret,otp) {
   url <- "https://api.kraken.com/0/private/OpenOrders"
   
   nonce <- as.character(as.numeric(Sys.time()) * 1e+06)
@@ -82,7 +82,7 @@ kraken_get_open_orders <- function(key,secret) {
   method_path <- gsub("^.*?kraken.com", "", url)
   sign <- hmac(key = base64Decode(secret, mode = "raw"), object = c(charToRaw(method_path), 
                                                                     digest(object = paste0(nonce, post_data), algo = "sha256", serialize = FALSE, raw = TRUE)), algo = "sha512", raw = TRUE)
-  httpheader <- c('API-Key' = key, 'API-Sign' = base64Encode(sign))
+  httpheader <- c('API-Key' = key, 'API-Sign' = base64Encode(sign), 'otp' = otp)
   curl <- getCurlHandle(useragent = "krakenuser")
   query_result_json <- rawToChar(getURLContent(curl = curl, 
                                                url = url, binary = TRUE, postfields = post_data, 
@@ -106,8 +106,10 @@ kraken_get_open_orders <- function(key,secret) {
 
 # PLACE ORDER  
 
-kraken_place_order <- function(pair, type, ordertype, price=NULL, volume, key, secret) {
+kraken_place_order <- function(pair, type, ordertype, price=NULL, volume, key, secret, otp) {
 
+    # type <- c("buy","sell")
+    # ordertype <- c("market","limit"...)
 	  if (is.null(price)) {
 		req <- list(pair=pair, type=type,ordertype=ordertype,volume=volume)
 	  } else {
@@ -122,7 +124,7 @@ kraken_place_order <- function(pair, type, ordertype, price=NULL, volume, key, s
       sign <- hmac(key = base64Decode(secret, mode = "raw"), 
                      object = c(charToRaw(method_path), digest(object = paste0(nonce, post_data), 
                      algo = "sha256", serialize = FALSE, raw = TRUE)), algo = "sha512", raw = TRUE)
-      httpheader <- c('API-Key' = key, 'API-Sign' = base64Encode(sign))
+      httpheader <- c('API-Key' = key, 'API-Sign' = base64Encode(sign), 'otp' = otp)
       curl <- getCurlHandle(useragent = "krakenuser")
       query_result_json <- rawToChar(getURLContent(curl = curl, url = url, binary = TRUE, 
                                                    postfields = post_data, httpheader = httpheader))
@@ -132,7 +134,7 @@ kraken_place_order <- function(pair, type, ordertype, price=NULL, volume, key, s
  
 # CANCEL ORDER
       
-kraken_cancel_order <- function(txid, key, secret) {  #txid can be retreived from kraken_get_open_orders function
+kraken_cancel_order <- function(txid, key, secret,otp) {  #txid can be retreived from kraken_get_open_orders function
   url <- "https://api.kraken.com/0/private/CancelOrder" 
   req <- list(txid=txid)
   nonce <- as.character(as.numeric(Sys.time()) * 1000000)
@@ -142,7 +144,7 @@ kraken_cancel_order <- function(txid, key, secret) {  #txid can be retreived fro
   sign <- hmac(key = base64Decode(secret, mode = "raw"), 
                object = c(charToRaw(method_path), digest(object = paste0(nonce, post_data), 
                                                          algo = "sha256", serialize = FALSE, raw = TRUE)), algo = "sha512", raw = TRUE)
-  httpheader <- c('API-Key' = key, 'API-Sign' = base64Encode(sign))
+  httpheader <- c('API-Key' = key, 'API-Sign' = base64Encode(sign), 'otp' = otp)
   curl <- getCurlHandle(useragent = "krakenuser")
   query_result_json <- rawToChar(getURLContent(curl = curl, url = url, binary = TRUE, 
                                                postfields = post_data, httpheader = httpheader))
@@ -152,7 +154,8 @@ kraken_cancel_order <- function(txid, key, secret) {  #txid can be retreived fro
 }
 
 # GET HISTORIC TRADES
-kraken_get_historic_trades <- function(from_unix_time=NULL,to_unix_time=NULL,pair=NULL,key,secret) {
+
+kraken_get_historic_trades <- function(from_unix_time=NULL,to_unix_time=NULL,pair=NULL,key,secret,otp) {
   url <- "https://api.kraken.com/0/private/TradesHistory"
   
   if (is.null(to_unix_time)) to_unix_time <- as.numeric(Sys.time())+100
@@ -168,7 +171,7 @@ kraken_get_historic_trades <- function(from_unix_time=NULL,to_unix_time=NULL,pai
   method_path <- gsub("^.*?kraken.com", "", url)
   sign <- hmac(key = base64Decode(secret, mode = "raw"), object = c(charToRaw(method_path), 
                                                                     digest(object = paste0(nonce, post_data), algo = "sha256", serialize = FALSE, raw = TRUE)), algo = "sha512", raw = TRUE)
-  httpheader <- c('API-Key' = key, 'API-Sign' = base64Encode(sign))
+  httpheader <- c('API-Key' = key, 'API-Sign' = base64Encode(sign), 'otp' = otp)
   curl <- getCurlHandle(useragent = "krakenuser")
   query_result_json <- rawToChar(getURLContent(curl = curl, 
                                                url = url, binary = TRUE, postfields = post_data, 
@@ -178,11 +181,13 @@ kraken_get_historic_trades <- function(from_unix_time=NULL,to_unix_time=NULL,pai
   n_trades <- length(query_result$result$trades)
   
   trades <- data.frame(query_result$result$trades[[1]])
-  if (n_trades>1) for (i in 2:n_trades) trades <- rbind(trades,data.frame(query_result$result$trades[[i]]))
-  trades$time_human <- as.POSIXct(trades$time,origin = "1970-01-01")
-  trades <- trades[order(trades$time),]
-  colnames(trades)[colnames(trades) %in% c("time")] <- "time_unix"
-  
+  trades
+  if (n_trades>1) {
+    for (i in 2:n_trades) trades <- rbind(trades,data.frame(query_result$result$trades[[i]]))
+    trades$time_human <- as.POSIXct(trades$time,origin = "1970-01-01")
+    trades <- trades[order(trades$time),]
+    colnames(trades)[colnames(trades) %in% c("time")] <- "time_unix"
+  }
   if (n_trades==0) print("Currently no trades in system!")
   
   if (!is.null(pair)) trades <- trades[trades$pair==pair,]
