@@ -1,6 +1,8 @@
-# **R wrapper for kraken api**
+# **R wrapper for the crypto trading api on the kraken.com exchange**
 
-Wrapped around (most of) these api calls: https://www.kraken.com/help/api
+Please note that most functions currently only work from Linux. Kraken.com apparently made some changes on the website causing functions to return errors when shooting API queries from Windows machines. I still haven't figured out why yet - or found a fix.
+
+Wrapping around (most of) these api calls: https://www.kraken.com/help/api
 
 Functions to query and handle market data and personal kraken account.
 
