@@ -1,6 +1,4 @@
-## **R wrapper for kraken api**
-
-# All functions working again..: 2 factor verification password (otp) included in private functions
+# **R wrapper for kraken api**
 
 Wrapped around (most of) these api calls: https://www.kraken.com/help/api
 
