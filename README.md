@@ -1,6 +1,6 @@
 # **R wrapper for the crypto trading api on the kraken.com exchange**
 
-Please note that most functions currently only work from Linux. Kraken.com apparently made some changes on the website causing functions to return errors when shooting API queries from Windows machines. I still haven't figured out why yet - or found a fix.
+Please note that most functions currently does not work from Windows OS - but on Linux and Mac machines. Kraken.com apparently made some changes on the website causing functions to return errors when shooting API queries from Windows machines. I still haven't figured out why yet - or found a fix.
 
 Wrapping around (most of) these api calls: https://www.kraken.com/help/api
 
