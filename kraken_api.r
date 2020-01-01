@@ -180,24 +180,28 @@ kraken_get_historic_trades <- function(from_unix_time=NULL,to_unix_time=NULL,pai
   
   n_trades <- length(query_result$result$trades)
   
-  trades <- data.frame(query_result$result$trades[[1]])
-  trades
-  if (n_trades>1) {
-    for (i in 2:n_trades) trades <- rbind(trades,data.frame(query_result$result$trades[[i]]))
-    trades$time_human <- as.POSIXct(trades$time,origin = "1970-01-01")
-    trades <- trades[order(trades$time),]
-    colnames(trades)[colnames(trades) %in% c("time")] <- "time_unix"
+  if (n_trades>0) {
+    trades <- data.frame(query_result$result$trades[[1]])
+    if (n_trades>1) {
+      for (i in 2:n_trades) trades <- rbind(trades,data.frame(query_result$result$trades[[i]]))
+      trades$time_human <- as.POSIXct(trades$time,origin = "1970-01-01")
+      trades <- trades[order(trades$time),]
+      colnames(trades)[colnames(trades) %in% c("time")] <- "time_unix"
+    }
+    
+    if (!is.null(pair)) trades <- trades[trades$pair==pair,]
+    
+    trades$price <- as.numeric(as.character(trades$price))
+    trades$cost <- as.numeric(as.character(trades$cost))
+    trades$fee <- as.numeric(as.character(trades$fee))
+    trades$vol <- as.numeric(as.character(trades$vol))
+    trades$margin <- as.numeric(as.character(trades$margin))
+  } 
+  else 
+  {
+    print("You had no trades in specified period!")
+    trades <- data.frame(price=0,cost=0,fee=0,vol=0,margin=0)
   }
-  if (n_trades==0) print("Currently no trades in system!")
-  
-  if (!is.null(pair)) trades <- trades[trades$pair==pair,]
-  
-  trades$price <- as.numeric(as.character(trades$price))
-  trades$cost <- as.numeric(as.character(trades$cost))
-  trades$fee <- as.numeric(as.character(trades$fee))
-  trades$vol <- as.numeric(as.character(trades$vol))
-  trades$margin <- as.numeric(as.character(trades$margin))
-  
   return(trades)
 }
 
